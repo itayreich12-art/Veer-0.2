@@ -1,76 +1,287 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>AI Travel Planner</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f9;
-            text-align: center;
-            padding: 50px;
-        }
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: auto;
-        }
-        input {
-            padding: 10px;
-            width: 70%;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            padding: 10px 20px;
-            margin-top: 10px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #results {
-            margin-top: 30px;
-            text-align: right;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Travel Planner ✈️</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      min-height: 100vh;
+      color: white;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      background: #00c6ff;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #0072ff;
+      transform: scale(1.02);
+    }
+
+    .results {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #ffd369;
+    }
+
+    .info-box {
+      background: rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      padding-right: 20px;
+      line-height: 2;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      opacity: 0.8;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media(max-width: 700px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .card {
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>✈️ מתכנן טיולים חכם</h1>
-    <input type="text" id="destination" placeholder="לאן תרצו לטוס?">
-    <br>
-    <button onclick="getTravelInfo()">תכנן לי טיול</button>
+<div class="container">
 
-    <div id="results"></div>
+  <div class="hero">
+    <h1>✈️ AI Travel Planner</h1>
+    <p>מתכנן הטיולים החכם שלך בעולם</p>
+  </div>
+
+  <div class="card">
+    <div class="grid">
+
+      <div>
+        <label>🌍 יעד</label>
+        <input type="text" id="destination" placeholder="למשל: טוקיו, פריז, רומא">
+      </div>
+
+      <div>
+        <label>📅 מספר ימים</label>
+        <input type="number" id="days" placeholder="7">
+      </div>
+
+      <div>
+        <label>💰 תקציב</label>
+        <select id="budget">
+          <option>נמוך</option>
+          <option>בינוני</option>
+          <option>גבוה</option>
+          <option>יוקרתי</option>
+        </select>
+      </div>
+
+      <div>
+        <label>🎒 סוג טיול</label>
+        <select id="style">
+          <option>משפחתי</option>
+          <option>זוגי</option>
+          <option>תרמילאים</option>
+          <option>יוקרתי</option>
+          <option>עסקים</option>
+        </select>
+      </div>
+
+    </div>
+
+    <button onclick="planTrip()">✨ תכנן לי טיול</button>
+  </div>
+
+  <div class="results card" id="results">
+
+    <div class="info-box">
+      <div class="section-title">📍 מידע כללי</div>
+      <div id="generalInfo"></div>
+    </div>
+
+    <div class="info-box">
+      <div class="section-title">🌟 אטרקציות מומלצות</div>
+      <div id="attractions"></div>
+    </div>
+
+    <div class="info-box">
+      <div class="section-title">🍜 אוכל מקומי</div>
+      <div id="food"></div>
+    </div>
+
+    <div class="info-box">
+      <div class="section-title">🧳 טיפים לטיול</div>
+      <div id="tips"></div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <p>Created with ❤️ by AI Travel Planner</p>
+  </div>
+
 </div>
 
 <script>
-function getTravelInfo() {
-    const dest = document.getElementById("destination").value;
-    const results = document.getElementById("results");
 
-    if (!dest) {
-        results.innerHTML = "❗ נא להכניס יעד";
-        return;
-    }
+function planTrip() {
 
-    results.innerHTML = "🔍 מחפש מידע...";
+  const destination = document.getElementById("destination").value;
+  const days = document.getElementById("days").value;
+  const budget = document.getElementById("budget").value;
+  const style = document.getElementById("style").value;
 
-    setTimeout(() => {
-        results.innerHTML = `
-            <h3>📍 יעד: ${dest}</h3>
-            <p><b>⏳ זמן טיסה:</b> משתנה לפי מוצא</p>
-            <p><b>🗣️ שפה:</b> תלוי במדינה</p>
-            <p><b>🌟 אטרקציות:</b> אוכל, תרבות, טבע ואטרקציות מקומיות</p>
-        `;
-    }, 1200);
+  if (!destination || !days) {
+    alert("נא למלא יעד ומספר ימים");
+    return;
+  }
+
+  document.getElementById("results").style.display = "block";
+
+  document.getElementById("generalInfo").innerHTML = `
+    <p><b>יעד:</b> ${destination}</p>
+    <p><b>משך הטיול:</b> ${days} ימים</p>
+    <p><b>תקציב:</b> ${budget}</p>
+    <p><b>סגנון:</b> ${style}</p>
+    <br>
+    <p>
+      ${destination} הוא יעד מדהים עם תרבות מיוחדת,
+      אטרקציות מפורסמות, אוכל מקומי וחוויות בלתי נשכחות.
+    </p>
+  `;
+
+  document.getElementById("attractions").innerHTML = `
+    <ul>
+      <li>🏛️ מוזיאונים ואתרים היסטוריים</li>
+      <li>🌆 סיורי עיר ומרכזי קניות</li>
+      <li>🌄 טבע ונופים מיוחדים</li>
+      <li>🎡 אטרקציות תיירותיות מובילות</li>
+      <li>📸 מקומות מושלמים לתמונות</li>
+    </ul>
+  `;
+
+  document.getElementById("food").innerHTML = `
+    <ul>
+      <li>🍜 מסעדות מקומיות מומלצות</li>
+      <li>☕ בתי קפה מיוחדים</li>
+      <li>🍰 קינוחים מקומיים</li>
+      <li>🥘 אוכל רחוב מפורסם</li>
+    </ul>
+  `;
+
+  document.getElementById("tips").innerHTML = `
+    <ul>
+      <li>🎫 להזמין כרטיסים מראש</li>
+      <li>💳 להחזיק גם מזומן וגם אשראי</li>
+      <li>📱 להשתמש במפות Google</li>
+      <li>🌦️ לבדוק מזג אוויר לפני הטיסה</li>
+      <li>🛡️ לעשות ביטוח נסיעות</li>
+    </ul>
+  `;
+
+  window.scrollTo({
+    top: document.body.scrollHeight,
+    behavior: "smooth"
+  });
 }
+
 </script>
 
 </body>
